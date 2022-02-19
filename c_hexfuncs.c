@@ -8,8 +8,12 @@
 unsigned hex_read(char data_buf[]) {
     unsigned bytes_read = 0;
     for (int i = 0; i < 16; i++) {
-        if (read(0, &data_buf[i], 1) == 1) bytes_read++;
-        else break;
+        if (read(0, &data_buf[i], 1) == 1) {
+            bytes_read++;
+        }
+        else {
+            break;
+        }
     }
     return bytes_read;
 }
