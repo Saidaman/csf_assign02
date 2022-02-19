@@ -12,9 +12,7 @@ unsigned hex_read(char data_buf[]) {
 }
 
 void hex_write_string(const char s[]) {
-    //TODO
-    assert(0);
-    return;
+    write(1, s, strlen(s));
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
