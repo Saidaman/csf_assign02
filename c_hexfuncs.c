@@ -22,9 +22,19 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
 }
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
-    //TODO
-    assert(0);
-    return;
+    sbuf[2] = '\0';
+    int char1 = byteval / 16;
+    int char2 = byteval % 16;
+    if (char1 > 9) {
+        sbuf[0] = (char) char1 + 87;
+    } else {
+        sbuf[0] = (char) char1;
+    }
+    if (char2 > 9) {
+        sbuf[1] = (char) char2 + 87;
+    } else {
+        sbuf[1] = (char) char2;
+    }
 }
 
 char hex_to_printable(unsigned char byteval) {
