@@ -81,7 +81,10 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
 }
 
 char hex_to_printable(unsigned char byteval) {
-    //TODO
-    assert(0);
-    return;
+    int ascii = byteval / 16;
+    if (ascii >= 33 && ascii <= 126) {
+        return (char) ascii;
+    } else {
+        return '.';
+    }
 }
