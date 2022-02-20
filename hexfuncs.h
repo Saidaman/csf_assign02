@@ -12,12 +12,17 @@ unsigned hex_read(char data_buf[]);
 void hex_write_string(const char s[]);
 
 // Returns the length of a given char array (string).
+// Helper function for hex_write_string.
 int string_length(const char s[]);
 
 // Format an unsigned value as an offset string consisting of exactly 8
 // hex digits.  The formatted offset is stored in sbuf, which must
 // have enough room for a string of length 8.
 void hex_format_offset(unsigned offset, char sbuf[]);
+
+// Calculate the number of leading zeros for the sbuf in hex_format_offset.
+// Helper function for hex_format_offset.
+unsigned calc_offset(unsigned val);
 
 // Format a byte value (in the range 0-255) as string consisting
 // of two hex digits.  The string is stored in sbuf.

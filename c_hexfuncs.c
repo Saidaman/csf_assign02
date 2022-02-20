@@ -31,9 +31,37 @@ int string_length(const char s[]) {
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
-    //TODO
-    assert(0);
-    return;
+    unsigned leading_zeros = calc_offset(offset);
+    //need to add leading zeros to sbuf
+    for (int i = 0; i < leading_zeros; i++) {
+        sbuf[i] = '0';
+    }
+    //need to do calculation
+    unsigned idx  = leading_zeros;
+    while (idx < 8) {
+        unsigned current_digit = offset;
+        while (current_digit > 15) {
+            current_digit = current_digit / 16;
+        }
+        if (current_digit > 9) {
+            sbuf[idx] = (offset + '0') + 87; //need to check if this is a safe way to convert unsinged to char
+        }
+        else {
+            sbuf[idx] = offset + '0';
+        }
+        offset = offset % 16;
+        idx++;
+    }
+}
+
+unsigned calc_offset(unsigned val) {
+    unsigned offset = 0;
+    while (val > 0) {
+        val = val / 16;
+        offset++;
+    }
+    //return the number of leading zeros for the sbuf
+    return 8 - offset; 
 }
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
