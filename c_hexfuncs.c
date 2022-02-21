@@ -44,10 +44,10 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             current_digit = current_digit / 16;
         }
         if (current_digit > 9) {
-            sbuf[idx] = (unsigned char)offset + '54'; //need to check if this is a safe way to convert unsinged to char
+            sbuf[idx] = (unsigned char)current_digit + '87'; //need to check if this is a safe way to convert unsinged to char
         }
         else { 
-            sbuf[idx] = offset + '0';
+            sbuf[idx] = current_digit + '0';
         }
         offset = offset % 16;
         idx++;
