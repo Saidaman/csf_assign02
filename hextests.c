@@ -81,10 +81,10 @@ void testFormatByteAsHex(TestObjs *objs) {
   ASSERT(0 == strcmp(buf, "10"));
 
   hex_format_byte_as_hex(32, buf);
-  ASSERT(0 == strcmp(buf, "30"));
+  ASSERT(0 == strcmp(buf, "20"));
 
   hex_format_byte_as_hex(48, buf);
-  ASSERT(0 == strcmp(buf, "40"));
+  ASSERT(0 == strcmp(buf, "30"));
 
   hex_format_byte_as_hex(69, buf);
   ASSERT(0 == strcmp(buf, "45"));
