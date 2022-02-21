@@ -5,6 +5,7 @@
 int main(void) {
   char input[17] = "";
   char address[9] = "";
+  char hexVal[2] = "";
   input[17] = '\0';
   address[9] = '\0';
   unsigned chars_read = hex_read(input);
@@ -17,8 +18,8 @@ int main(void) {
     hex_write_string(" "); //empty space?
     //print ASCII values
     for (int i = 0; i < chars_read; i++) {
-      hex_format_byte_as_hex(input[i]);
-      hex_write_string(input[i]);
+      hex_format_byte_as_hex(input[i], hexVal);
+      hex_write_string(hexVal);
       hex_write_string(" ");
     }
     //need to print empty space for last line?
@@ -30,7 +31,7 @@ int main(void) {
   //keep repeating while there is valid input
   while (chars_read > 0) {
     hex_format_offset(chars_read, address);
-    printf("%s: ", address);
+    //printf("%s: ", address); can't have printf
     
 
 
