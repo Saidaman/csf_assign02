@@ -50,7 +50,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             //printf("%u\n", offset);
             //offset = offset + '0';
             //printf("%u\n", offset);
-            sbuf[idx] = offset;
+            sbuf[idx] = offset + '0';
             //printf("%c\n", sbuf[idx]);
         }
         offset = offset % 16;
