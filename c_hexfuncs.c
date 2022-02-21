@@ -82,7 +82,7 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
 }
 
 char hex_to_printable(unsigned char byteval) {
-    if (byteval >= 33 && byteval <= 126) {
+    if (byteval >= 32 && byteval <= 126) {
         return (char) byteval;
     } else {
         return '.';

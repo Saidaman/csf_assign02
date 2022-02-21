@@ -67,9 +67,71 @@ void testFormatByteAsHex(TestObjs *objs) {
   char buf[16];
   hex_format_byte_as_hex(objs->test_data_1[0], buf);
   ASSERT(0 == strcmp(buf, "48"));
+  
+  hex_format_byte_as_hex(0, buf);
+  ASSERT(0 == strcmp(buf, "00"));
+
+  hex_format_byte_as_hex(255, buf);
+  ASSERT(0 == strcmp(buf, "ff"));
+
+  hex_format_byte_as_hex(187, buf);
+  ASSERT(0 == strcmp(buf, "bb"));
+
+  hex_format_byte_as_hex(16, buf);
+  ASSERT(0 == strcmp(buf, "10"));
+
+  hex_format_byte_as_hex(32, buf);
+  ASSERT(0 == strcmp(buf, "30"));
+
+  hex_format_byte_as_hex(48, buf);
+  ASSERT(0 == strcmp(buf, "40"));
+
+  hex_format_byte_as_hex(69, buf);
+  ASSERT(0 == strcmp(buf, "45"));
+
+  hex_format_byte_as_hex(150, buf);
+  ASSERT(0 == strcmp(buf, "96"));
+
+  hex_format_byte_as_hex(87, buf);
+  ASSERT(0 == strcmp(buf, "57"));
+
+  hex_format_byte_as_hex(15, buf);
+  ASSERT(0 == strcmp(buf, "0f"));
+
+  hex_format_byte_as_hex(30, buf);
+  ASSERT(0 == strcmp(buf, "1e"));
+
+  hex_format_byte_as_hex(58, buf);
+  ASSERT(0 == strcmp(buf, "3a"));
+
+  hex_format_byte_as_hex(247, buf);
+  ASSERT(0 == strcmp(buf, "f7"));
 }
 
 void testHexToPrintable(TestObjs *objs) {
   ASSERT('H' == hex_to_printable(objs->test_data_1[0]));
   ASSERT('.' == hex_to_printable(objs->test_data_1[13]));
+  
+  //Only values in [32, 126] range are printable
+  ASSERT((char) 32 == hex_to_printable(32));
+  ASSERT((char) 33 == hex_to_printable(33));
+  ASSERT((char) 56 == hex_to_printable(56));
+  ASSERT((char) 63 == hex_to_printable(63));
+  ASSERT((char) 79 == hex_to_printable(79));
+  ASSERT((char) 101 == hex_to_printable(101));
+  ASSERT((char) 103 == hex_to_printable(103));
+  ASSERT((char) 125 == hex_to_printable(125));
+  ASSERT((char) 126 == hex_to_printable(126));
+
+  //Values outside of [32, 126] range return '.'
+  ASSERT(hex_to_printable(31) == '.');
+  ASSERT(hex_to_printable(127) == '.');
+  ASSERT(hex_to_printable(0) == '.');
+  ASSERT(hex_to_printable(255) == '.');
+  ASSERT(hex_to_printable(201) == '.');
+  ASSERT(hex_to_printable(-5) == '.');
+  ASSERT(hex_to_printable(176) == '.');
+  ASSERT(hex_to_printable(19) == '.');
+  ASSERT(hex_to_printable(420) == '.');
+  ASSERT(hex_to_printable(21) == '.');
 }
