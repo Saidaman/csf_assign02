@@ -56,6 +56,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
         offset = offset % 16;
         idx++;
     }
+    sbuf[8] = '\0';
 }
 
 unsigned calc_offset(unsigned val) {
