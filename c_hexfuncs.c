@@ -69,21 +69,20 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     int char1 = byteval / 16;
     int char2 = byteval % 16;
     if (char1 > 9) {
-        sbuf[0] = (char) char1 + 87;
+        sbuf[0] = char1 + '87';
     } else {
-        sbuf[0] = (char) char1;
+        sbuf[0] = char1 + '0';
     }
     if (char2 > 9) {
-        sbuf[1] = (char) char2 + 87;
+        sbuf[1] = char2 + '87';
     } else {
-        sbuf[1] = (char) char2;
+        sbuf[1] = char2 + '0';
     }
 }
 
 char hex_to_printable(unsigned char byteval) {
-    int ascii = byteval / 16;
-    if (ascii >= 33 && ascii <= 126) {
-        return (char) ascii;
+    if (byteval >= 33 && byteval <= 126) {
+        return (char) byteval;
     } else {
         return '.';
     }
