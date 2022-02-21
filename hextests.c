@@ -49,8 +49,11 @@ void testFormatOffset(TestObjs *objs) {
   (void) objs; // suppress warning about unused parameter
   char buf[16];
   hex_format_offset(1L, buf);
-  printf("%s\n", buf);
   ASSERT(0 == strcmp(buf, "00000001"));
+
+  hex_format_offset(16, buf);
+  printf("%s\n", buf);
+  ASSERT(0 == strcmp(buf, "00000010"));
 }
 
 void testFormatByteAsHex(TestObjs *objs) {
