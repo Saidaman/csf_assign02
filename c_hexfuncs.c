@@ -47,11 +47,11 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             sbuf[idx] = (unsigned char)offset + 87; //need to check if this is a safe way to convert unsinged to char
         }
         else { //debugging
-            printf("%u\n", offset);
-            offset = offset + '0';
-            printf("%u\n", offset);
+            //printf("%u\n", offset);
+            //offset = offset + '0';
+            //printf("%u\n", offset);
             sbuf[idx] = offset;
-            printf("%c\n", sbuf[idx]);
+            //printf("%c\n", sbuf[idx]);
         }
         offset = offset % 16;
         idx++;
