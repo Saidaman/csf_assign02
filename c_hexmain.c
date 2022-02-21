@@ -5,10 +5,17 @@
 int main(void) {
   char input_buf[16] = {0};
   char address[9] = "";
-  address[9] = '\0';
+  char hex_digits[3] = "";
   unsigned chars_read = 0;
+  unsigned bytes_read = 0;
 
   while ((chars_read = hex_read(input_buf)) != 0) {
+    //print column 1
+    hex_format_offset(bytes_read, address);
+    hex_write_string(address);
+    hex_write_string(": "); //colon and space
+
+    //print column 2
     
     if (chars_read < 16) {
       break;
