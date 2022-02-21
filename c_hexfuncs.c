@@ -1,3 +1,10 @@
+/*
+ * Implementation of C functions useful for a hexdump program.
+ * CSF Assignment 2
+ * Shayan Hossain, Sai Earla
+ * shossa11@jhu.edu, searla1@jhu.edu
+ */
+
 // C implementation of hexdump functions
 
 #include <unistd.h>  // this is the only system header file you may include!

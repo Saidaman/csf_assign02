@@ -1,3 +1,10 @@
+/*
+ * Header file of C functions useful for a hexdump program.
+ * CSF Assignment 2
+ * Shayan Hossain, Sai Earla
+ * shossa11@jhu.edu, searla1@jhu.edu
+ */
+
 // Function prototypes for hexdump functions
 // Do not change these!
 

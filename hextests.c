@@ -1,3 +1,10 @@
+/*
+ * Testing implementation of functions useful for a hexdump program.
+ * CSF Assignment 2
+ * Shayan Hossain, Sai Earla
+ * shossa11@jhu.edu, searla1@jhu.edu
+ */
+
 // Unit tests for hex functions
 // These tests should work for both your C implementations and your
 // assembly language implementations
