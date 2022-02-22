@@ -67,7 +67,7 @@ L.adjustChar2:
 //are ready to be put into sbuf
 L.char2Adjusted:
 	movq %rdi, (%rsi) //first element in sbuf is char1
-	moveq %rax, 1(%rsi) //second element in sbuf is char2
+	movq %rax, 1(%rsi) //second element in sbuf is char2
 
     addq $8, %rsp //stack alignment
 	ret
