@@ -44,15 +44,17 @@ int main(void) {
       char char_to_print[2];
       char_to_print[0] = hex_to_printable(input_buf[i]);
       char_to_print[1]= '\0';
-      hex_write_string(&char_to_print);
+      hex_write_string(char_to_print);
       }
 
       //need to add a \n before the next x bytes read in
-      hex_write_string('\n');
+      const char * newline = "\n";
+      hex_write_string(newline);
 
       //last line of input where the bytes read in are < 16
       if (need_exit) {
         break;
       }
+      bytes_read += 16;
   }
 }
