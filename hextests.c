@@ -116,6 +116,7 @@ void testFormatByteAsHex(TestObjs *objs) {
 }
 
 void testHexToPrintable(TestObjs *objs) {
+  printf("%c\n", hex_to_printable(objs->test_data_1[0]));
   ASSERT('H' == hex_to_printable(objs->test_data_1[0]));
   ASSERT('.' == hex_to_printable(objs->test_data_1[13]));
   
