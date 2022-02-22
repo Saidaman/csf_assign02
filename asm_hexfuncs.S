@@ -40,32 +40,32 @@ hex_format_byte_as_hex:
 	andq $0xf, %rax //char2: & operator for last 4 bits
 
 	cmpq $9, %rdi //comparing "char1" like from C implementation with 9
-	ja .LadjustChar1 //going into if statement for char1 like in C implementation
+	ja .LadjustCharOne //going into if statement for char1 like in C implementation
 
 	addq $48, %rdi //this is the else part for char1 like in C implementation to add '0'
-	jmp .Lchar1Adjusted //jumps to second if-else block like in C implementation
+	jmp .LcharOneAdjusted //jumps to second if-else block like in C implementation
 
 //adding 'a' and subtracting 10 from char1 like in C implementation
-L.adjustChar1:
+L.adjustCharOne:
 	addq $97, %rdi //adding 'a' like in C implementation
 	subq $10, %rdi //subtracting 10 like in C implementation
 
 //this is the second if-else block for char2 like in C implementation	
-L.char1Adjusted:
+L.charOneAdjusted:
 	cmpq $9, %rax //comparing char2 with 9
-	ja .LadjustChar2 //if char2 > 9
+	ja .LadjustCharTwo //if char2 > 9
 
 	addq $48, %rax //else (when char2 <= 9)
-	jmp .Lchar2Adjusted //indicates both chars have been adjusted and are ready to be put into sbuf
+	jmp .LcharTwoAdjusted //indicates both chars have been adjusted and are ready to be put into sbuf
 
 //adding 'a' and subtracting 10 from char2 like in C implementation
-L.adjustChar2:
+L.adjustCharTwo:
 	addq $97, %rax //adding 'a' like in C implementation
 	subq $10, %rax //subtracting 10 like in C implementation
 
 //At this point, both chars have had the necessary adjustments from the "if-else" blocks above and
 //are ready to be put into sbuf
-L.char2Adjusted:
+L.charTwoAdjusted:
 	movq %rdi, (%rsi) //first element in sbuf is char1
 	movq %rax, 1(%rsi) //second element in sbuf is char2
 
