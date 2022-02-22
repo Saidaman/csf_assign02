@@ -10,15 +10,12 @@
 #include <unistd.h>  // this is the only system header file you may include!
 #include "hexfuncs.h"
 
-// TODO: add function implementations here
-
 unsigned hex_read(char data_buf[]) {
     unsigned bytes_read = 0;
     for (int i = 0; i < 16; i++) {
         if (read(0, &data_buf[i], 1) == 1) {
             bytes_read++;
-        }
-        else {
+        } else {
             break;
         }
     }
@@ -52,8 +49,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
         }
         if (current_digit > 9) {
             sbuf[idx] = (char)current_digit + '87'; //need to check if this is a safe way to convert unsinged to char
-        }
-        else { 
+        } else { 
             sbuf[idx] = current_digit + '0';
         }
         offset = offset % 16;
