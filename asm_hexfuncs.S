@@ -76,19 +76,19 @@ hex_format_byte_as_hex:
 hex_to_printable:
 	subq $8, %rsp //stack alignment
 
-	movq %rdi, %rcx //store input into register %rcx
+	movq %rdi, %rax //store input into register %rax
 
 	cmpq $126, %rdi //comparing input with value 126
 	jbe .LcheckLowerBound //if input is <= 126, jump to check if input is >= 32
 
-	movq $46, %rcx //if input is > 126, store ascii value of '.'
+	movq $46, %rax //if input is > 126, store ascii value of '.'
 	jmp .LreturnVal //return the '.' as stored in above line
 
 .LcheckLowerBound: //comparing input with value 32
 	cmpq $32, %rdi //comparing input value with 32
 	jae .LreturnVal //return input value, which is in printable range
 
-	movq $46, %rcx //if input is < 32, store ascii value of '.'
+	movq $46, %rax //if input is < 32, store ascii value of '.'
 	jmp .LreturnVal //return the '.' as stored in above line
 
 .LreturnVal:
