@@ -51,7 +51,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             current_digit = current_digit / 16;
         }
         if (current_digit > 9) {
-            sbuf[idx] = (unsigned char)current_digit + '87'; //need to check if this is a safe way to convert unsinged to char
+            sbuf[idx] = (char)current_digit + '87'; //need to check if this is a safe way to convert unsinged to char
         }
         else { 
             sbuf[idx] = current_digit + '0';
