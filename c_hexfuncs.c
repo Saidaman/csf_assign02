@@ -24,7 +24,7 @@ unsigned hex_read(char data_buf[]) {
 
 void hex_write_string(const char s[]) {
     int res = write(1, s, string_length(s));
-    if (res < 0) {
+    if (res < 0) { //error checking
         int raise(int sig);
         raise(2);
     }
@@ -77,9 +77,9 @@ void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     int char1 = byteval / 16; //first "letter" in output
     int char2 = byteval % 16; //second "letter" in output
     if (char1 > 9) {
-        sbuf[0] = char1 + 'a' - 10; //adjusting char for a, b, c, d, e, f
+        sbuf[0] = char1 + 'a' - 10; //adjusting char for when it's [a, f]
     } else {
-        sbuf[0] = char1 + '0'; //adjusting char for [0,9]
+        sbuf[0] = char1 + '0'; //adjusting char for when it's [0,9]
     }
     if (char2 > 9) {
         sbuf[1] = char2 + 'a' - 10;

@@ -34,20 +34,20 @@ hex_format_byte_as_hex:
 
 	movq $0, 2(%rsi) //storing null character in last position of input array
 
-	movq %rdi, %rax //copy input char value
+	movq %rdi, %rax //copying input char value
 	
-	shrq $4, %rdi //char1: right shift 4 places for first four bits
-	andq $0xf, %rax //char2: & operator for last 4 bits
+	shrq $4, %rdi //right shift input value 4 places for first four bits - gives us char1
+	andq $0xf, %rax //& operator for last 4 bits - gives us char2
 
-	cmpq $9, %rdi //comparing "char1" like from C implementation with 9
+	cmpq $9, %rdi //comparing "char1" with 9 like from C implementation 
 	ja .LadjustChar1 //going into if statement for char1 like in C implementation
 
-	addq $48, %rdi //this is the else part for char1 like in C implementation to add '0'
+	addq $48, %rdi //this is the else part for char1 to add '0' like in C implementation
 	jmp .Lchar1Adjusted //jumps to second if-else block like in C implementation
 
 //adding 'a' and subtracting 10 from char1 like in C implementation
 .LadjustChar1:
-	addq $97, %rdi //adding 'a' like in C implementation
+	addq $97, %rdi //adding 'a' like in C implementation (ascii value of 'a' is 97)
 	subq $10, %rdi //subtracting 10 like in C implementation
 
 //this is the second if-else block for char2 like in C implementation	
@@ -84,9 +84,9 @@ hex_to_printable:
 	movq $46, %rax //if input is > 126, store ascii value of '.'
 	jmp .LreturnVal //return the '.' as stored in above line
 
-.LcheckLowerBound: //comparing input with value 32
+.LcheckLowerBound:
 	cmpq $32, %rdi //comparing input value with 32
-	jae .LreturnVal //return input value, which is in printable range
+	jae .LreturnVal //if input is >= 32, we are in printable range
 
 	movq $46, %rax //if input is < 32, store ascii value of '.'
 	jmp .LreturnVal //return the '.' as stored in above line
