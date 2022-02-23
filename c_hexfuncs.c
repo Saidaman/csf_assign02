@@ -23,7 +23,11 @@ unsigned hex_read(char data_buf[]) {
 }
 
 void hex_write_string(const char s[]) {
-    write(1, s, string_length(s));
+    int res = write(1, s, string_length(s));
+    if (res < 0) {
+        int raise(int sig);
+        raise(2);
+    }
 }
 
 int string_length(const char s[]) {
