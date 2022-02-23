@@ -39,7 +39,16 @@ int string_length(const char s[]) {
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
-    unsigned leading_zeros = calc_offset(offset);
+    //Gary's function from OH to make function easier
+    char hexVals[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    char *val = sbuf;
+    for (int i = 28; i >= 0; i -= 4) {
+        *val++ = hexVals[(offset >> i) & 15];
+    }
+    *val = '\0';
+}
+    //MAKE SURE TO DELETE CORRESPONDING HELPER METHOD IN .H
+    /*unsigned leading_zeros = calc_offset(offset);
     //need to add leading zeros to sbuf
     for (int i = 0; i < leading_zeros; i++) {
         sbuf[i] = '0';
@@ -52,7 +61,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             current_digit = current_digit / 16;
         }
         if (current_digit > 9) {
-            sbuf[idx] = (char)current_digit + 'a' - 10; //need to check if this is a safe way to convert unsinged to char
+            sbuf[idx] = (char)current_digit + 'a' - 10;
         } else { 
             sbuf[idx] = current_digit + '0';
         }
@@ -62,7 +71,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
     sbuf[8] = '\0';
 }
 
-unsigned calc_offset(unsigned val) {
+/*unsigned calc_offset(unsigned val) {
     unsigned offset = 0;
     while (val > 0) {
         val = val / 16;
@@ -70,7 +79,7 @@ unsigned calc_offset(unsigned val) {
     }
     //return the number of leading zeros for the sbuf
     return 8 - offset; 
-}
+}*/
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     sbuf[2] = '\0';
