@@ -27,10 +27,6 @@ int string_length(const char s[]);
 // have enough room for a string of length 8.
 void hex_format_offset(unsigned offset, char sbuf[]);
 
-// Calculate the number of leading zeros for the sbuf in hex_format_offset.
-// Helper function for hex_format_offset.
-unsigned calc_offset(unsigned val);
-
 // Format a byte value (in the range 0-255) as string consisting
 // of two hex digits.  The string is stored in sbuf.
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]);
