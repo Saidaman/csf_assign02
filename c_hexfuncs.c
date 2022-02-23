@@ -48,7 +48,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
             current_digit = current_digit / 16;
         }
         if (current_digit > 9) {
-            sbuf[idx] = (char)current_digit + '87'; //need to check if this is a safe way to convert unsinged to char
+            sbuf[idx] = (char)current_digit + 'a' - 10; //need to check if this is a safe way to convert unsinged to char
         } else { 
             sbuf[idx] = current_digit + '0';
         }
@@ -70,12 +70,12 @@ unsigned calc_offset(unsigned val) {
 
 void hex_format_byte_as_hex(unsigned char byteval, char sbuf[]) {
     sbuf[2] = '\0';
-    int char1 = byteval / 16;
-    int char2 = byteval % 16;
+    int char1 = byteval / 16; //first "letter" in output
+    int char2 = byteval % 16; //second "letter" in output
     if (char1 > 9) {
-        sbuf[0] = char1 + 'a' - 10;
+        sbuf[0] = char1 + 'a' - 10; //adjusting char for a, b, c, d, e, f
     } else {
-        sbuf[0] = char1 + '0';
+        sbuf[0] = char1 + '0'; //adjusting char for [0,9]
     }
     if (char2 > 9) {
         sbuf[1] = char2 + 'a' - 10;

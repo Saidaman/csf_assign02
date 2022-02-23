@@ -37,8 +37,8 @@ int main(void) {
       }
       need_exit = 1; //last line of input read in
     }
-    //two spaces before string representation
-    hex_write_string("  ");
+    //one space before string representation
+    hex_write_string(" ");
 
     for (int i = 0; i < chars_read; i++) {
       char char_to_print[2];
