@@ -39,11 +39,13 @@ int string_length(const char s[]) {
 }
 
 void hex_format_offset(unsigned offset, char sbuf[]) {
-    //Gary's function from OH to make function easier
+    //Gary's suggestion from OH to make function easier
     char hexVals[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     char *val = sbuf;
     for (int i = 28; i >= 0; i -= 4) {
-        *val++ = hexVals[(offset >> i) & 15];
+        int idx = (offset >> i) & 15;
+        *val = hexVals[idx];
+        *val++;
     }
     *val = '\0';
 }
