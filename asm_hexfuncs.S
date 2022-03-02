@@ -48,10 +48,6 @@ hex_write_string:
 	movl $1, %eax //telling syscall we want to write
 	syscall //writing
 	cmpl $0, %eax
-	jl .LerrorCheck
-
-.LerrorCheck:
-	//raise part
 
 .Ldone:	
 	addq $8, %rsp //stack alignment
