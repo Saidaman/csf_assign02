@@ -27,13 +27,13 @@ hex_read:
 	movl $1, %edx //third argument of syscall
 	movl $0, %eax //telling syscall we want to read
 	syscall //reading
-	incl %rsi //pointer arithmetic to traverse array
-	cmpl %eax, $1 //output of syscall compared with how many bytes we want read
+	addq $1, %rsi //pointer arithmetic to traverse array
+	cmpl $1, %eax //output of syscall compared with how many bytes we want read
 	jne .Ldone //when it's not equal to
 	incl %r10d //increment bytes_read
 	jmp .LreadLoop //another iteration of the read loop
 
-.Ldone:
+.LdoneReading:
 	addq $8, %rsp //stack alignment
 	movl %r10d, %eax //ensuring bytes_read is the value being returned
     ret
@@ -49,7 +49,7 @@ hex_write_string:
 	syscall //writing
 	cmpl $0, %eax
 
-.Ldone:	
+.LdoneWriting:	
 	addq $8, %rsp //stack alignment
     ret
 
@@ -79,13 +79,13 @@ strLen:
 	addq $8, %rsp                 /* restore stack pointer */
 	ret
 
-	.globl hex_format_offset
+/*	.globl hex_format_offset
 hex_format_offset:
 	subq $8, %rsp //stack alignment
 
 .Ldone:
 	addq $8, %rsp //stack alignment	
-    ret
+    ret*/
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
