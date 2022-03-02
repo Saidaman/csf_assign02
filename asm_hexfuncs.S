@@ -18,14 +18,77 @@
 
 	.globl hex_read
 hex_read:
+	subq $8, %rsp //stack alignment
+	movl $0, %r10d //bytes_read
+
+.LreadLoop:
+	movq %rdi, %rsi //second argument of syscall
+	movl $0, %edi //first argument of syscall
+	movl $1, %edx //third argument of syscall
+	movl $0, %eax //telling syscall we want to read
+	syscall //reading
+	incl %rsi //pointer arithmetic to traverse array
+	cmpl %eax, $1 //output of syscall compared with how many bytes we want read
+	jne .Ldone //when it's not equal to
+	incl %r10d //increment bytes_read
+	jmp .LreadLoop //another iteration of the read loop
+
+.Ldone:
+	addq $8, %rsp //stack alignment
+	movl %r10d, %eax //ensuring bytes_read is the value being returned
     ret
 
 	.globl hex_write_string
 hex_write_string:
+	subq $8, %rsp //stack alignment
+	movl $1, %edi //first argument of write function
+	movq %rdi, %rsi //second argument of write function
+	call strLen //third argument of syscall (stored in %eax)
+	movl %eax, %edx //moving result from line above into third argument register	
+	movl $1, %eax //telling syscall we want to write
+	syscall //writing
+	cmpl $0, %eax
+	jl .LerrorCheck
+
+.LerrorCheck:
+	//raise part
+
+.Ldone:	
+	addq $8, %rsp //stack alignment
     ret
+
+/*
+ * Determine the length of specified character string.
+ *
+ * Parameters:
+ *   s - pointer to a NUL-terminated character string
+ *
+ * Returns:
+ *    number of characters in the string
+ */
+	.globl strLen
+strLen:
+	subq $8, %rsp                 /* adjust stack pointer */
+	movq $0, %r10                 /* initial count is 0 */
+
+.LstrLenLoop:
+	cmpb $0, (%rdi)               /* found NUL terminator? */
+	jz .LstrLenDone               /* if so, done */
+	inc %r10                      /* increment count */
+	inc %rdi                      /* advance to next character */
+	jmp .LstrLenLoop              /* continue loop */
+
+.LstrLenDone:
+	movq %r10, %rax               /* return count */
+	addq $8, %rsp                 /* restore stack pointer */
+	ret
 
 	.globl hex_format_offset
 hex_format_offset:
+	subq $8, %rsp //stack alignment
+
+.Ldone:
+	addq $8, %rsp //stack alignment	
     ret
 
 	.globl hex_format_byte_as_hex
