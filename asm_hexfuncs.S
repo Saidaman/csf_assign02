@@ -9,7 +9,7 @@
 
 	.section .rodata
 
-	/* TODO: add read-only data such as strings here */
+	hexArray: .string "0123456789abcdef"
 
 	.section .text
 
@@ -79,13 +79,28 @@ strLen:
 	addq $8, %rsp                 /* restore stack pointer */
 	ret
 
-/*	.globl hex_format_offset
+	.globl hex_format_offset
 hex_format_offset:
 	subq $8, %rsp //stack alignment
+	movq %rsi, %r8
+	movq $28, %r9
+.LoffsetLoop:
+	cmpq $0, %r9
+	je .LdoneOffset
+	movq %rdi, %r10
+	shrq %r9, %r10
+	andq $15, %r10
+	movq $hexArray, %r11
+	movb (%r11, %r10, 1), %cl
+	movb %cl, (%r8)
+	incq %r8
+	subq $4, %r9
+	jmp .LoffsetLoop
 
-.Ldone:
+.LdoneOffset:
+	movb $0, (%r9)
 	addq $8, %rsp //stack alignment	
-    ret*/
+    ret
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
