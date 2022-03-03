@@ -79,14 +79,14 @@ strLen:
 	addq $8, %rsp                 /* restore stack pointer */
 	ret
 
-	.globl hex_format_offset
+	.globl hex_format_offset //need to annotate this function with comments
 hex_format_offset:
 	subq $8, %rsp //stack alignment
 	movq %rsi, %r8
 	movq $28, %r9
 .LoffsetLoop:
 	cmpq $0, %r9
-	je .LdoneOffset
+	jl .LdoneOffset
 	movq %rdi, %r10
 	shrq %r9, %r10
 	andq $15, %r10
