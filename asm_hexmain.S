@@ -64,7 +64,8 @@ main:
 	call hex_write_string
 
 .LprintColumnTwo:
-	movq %r12(%rbp), %rdi //move the char at position %rbp + %r12(loop index) into %rdi
+	movq (%rbp, %r12), %rdi
+	//movq %r12(%rbp), %rdi //move the char at position %rbp + %r12(loop index) into %rdi
 	movq 25(%rbp), %rsi //move hex_digits 25(%rbp) into %rsi
 	call hex_format_byte_as_hex
 	movq 25(%rbp), %rdi //move hex_digits 25(%rbp) into %rdi
