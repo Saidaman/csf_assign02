@@ -38,10 +38,11 @@ hex_read:
 	.globl hex_write_string
 hex_write_string:
 	subq $8, %rsp //stack alignment
-	movl $1, %edi //first argument of write function
+	//movl $1, %edi //first argument of write function
 	movq %rdi, %rsi //second argument of write function
 	call strLen //third argument of syscall (stored in %eax)
 	movl %eax, %edx //moving result from line above into third argument register	
+	movl $1, %edi
 	movl $1, %eax //telling syscall we want to write
 	syscall //writing
 	cmpl $0, %eax
