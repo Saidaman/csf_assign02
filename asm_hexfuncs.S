@@ -88,7 +88,7 @@ hex_format_offset:
 	cmpq $0, %r9
 	jl .LdoneOffset
 	movq %rdi, %r10
-	movq %r9, %cl
+	movq (%r9), %cl
 	shrq %cl, %r10
 	andq $15, %r10
 	movq $hexArray, %r11
