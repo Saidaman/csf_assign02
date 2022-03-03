@@ -29,7 +29,7 @@ hex_read:
 	syscall //reading
 	addq $1, %rsi //pointer arithmetic to traverse array
 	cmpl $1, %eax //output of syscall compared with how many bytes we want read
-	jne .Ldone //when it's not equal to
+	jne .LdoneReading //when it's not equal to
 	incl %r10d //increment bytes_read
 	jmp .LreadLoop //another iteration of the read loop
 
