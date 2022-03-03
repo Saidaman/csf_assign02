@@ -97,7 +97,7 @@ hex_format_offset:
 	jmp .LoffsetLoop
 
 .LdoneOffset:
-	movb $0, (%r9)
+	movq $0, (%r9)
 	addq $8, %rsp //stack alignment	
     ret
 
