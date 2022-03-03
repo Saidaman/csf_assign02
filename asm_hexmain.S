@@ -89,7 +89,8 @@ main:
 
 //fall through
 .LprintColumnThree:
-	movq %r14(%rbp), %rdi //moves the input_buf[i] into %rdi
+	movq (%rbp, %r14), %rdi
+	//movq %r14(%rbp), %rdi //moves the input_buf[i] into %rdi
 	call hex_to_printable
 	movq %rax, 40(%rbp) //moves return value into char_to_print[0] 40(%rbp)
 	movq $sNullTerminator, 41(%rbp) //moves null terminator into char_to_print[1] 41(%rbp)
