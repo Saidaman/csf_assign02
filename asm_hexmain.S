@@ -94,7 +94,7 @@ main:
 	call hex_to_printable
 	movq %rax, 40(%rbp) //moves return value into char_to_print[0] 40(%rbp)
 	movq $sNullTerminator, 41(%rbp) //moves null terminator into char_to_print[1] 41(%rbp)
-	movl 40(%rbp), $rdi //moves char_to_print 40(%rbp) into %rdi
+	movq 40(%rbp), %rdi //moves char_to_print 40(%rbp) into %rdi
 	call hex_write_string
 	incq %r14 //increments the loop index by 1
 	cmpq 36(%rbp), %r14 // compare the loop index to chars_read	36(%rbp)
