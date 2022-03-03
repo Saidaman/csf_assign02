@@ -130,7 +130,7 @@ main:
 	popq %rbp
 
 	addq $80, %rsp //stack alignment
-	movl $0, %rax //main function should return 0 from main
+	movq $0, %rax //main function should return 0 from main
 	ret
 
 /* vim:ft=gas:

@@ -18,23 +18,20 @@
 
 	.globl hex_read
 hex_read:
-	subq $8, %rsp //stack alignment
-	movl $0, %r10d //bytes_read
+	subq $48, %rsp //stack alignment
 
-.LreadLoop:
 	movq %rdi, %rsi //second argument of syscall
 	movl $0, %edi //first argument of syscall
-	movl $1, %edx //third argument of syscall
+	movl $16, %edx //third argument of syscall
+	
 	movl $0, %eax //telling syscall we want to read
-	syscall //reading
-	addq $1, %rsi //pointer arithmetic to traverse array
-	cmpl $1, %eax //output of syscall compared with how many bytes we want read
-	jne .LdoneReading //when it's not equal to
-	incl %r10d //increment bytes_read
-	jmp .LreadLoop //another iteration of the read loop
 
-.LdoneReading:
-	addq $8, %rsp //stack alignment
+	syscall //reading
+
+    addl %eax, %esi // move pointer bytes_read spaces forward
+	addl $0, %esi //store null character
+	subl %eax, %esi //move pointer bytes_read spaces backward
+	addq $48, %rsp //stack alignment
 	movl %r10d, %eax //ensuring bytes_read is the value being returned
     ret
 
