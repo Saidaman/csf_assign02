@@ -12,8 +12,8 @@
 	sColonSpace: .string ": "
 	sSpace: .string " "
 	sNewLine: .string "\n"
-	sNullTerminator .string "\0"
-	sThreeSpace .string "   "
+	sNullTerminator: .string "\0"
+	sThreeSpace: .string "   "
 
 	.section .text
 
