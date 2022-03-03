@@ -41,9 +41,9 @@ main:
 
 
 .LmainWhileLoop:
-	movq $0, %r12 //loop counter for .LprintColumnTwo
-	movq $16, %r13 //loop counter for .LpadWithSpaces
-	movq $0, %r14 //loop counter for .LprintColumnThree
+	movq $0, %r12 //intialize loop counter for .LprintColumnTwo
+	movq $16, %r13 //initialize loop counter for .LpadWithSpaces
+	movq $0, %r14 //initialize loop counter for .LprintColumnThree
 
 	movq %rbp, %rdi //moves input_buf into first argument for input into hex_read
 	call hex_read 
@@ -91,7 +91,7 @@ main:
 	movq %r14(%rbp), %rdi //moves the input_buf[i] into %rdi
 	call hex_to_printable
 	movq %rax, 40(%rbp) //moves return value into char_to_print[0] 40(%rbp)
-	movq $sNullTerminator, 41(rbp) //moves null terminator into char_to_print[1] 41(%rbp)
+	movq $sNullTerminator, 41(%rbp) //moves null terminator into char_to_print[1] 41(%rbp)
 	movq 40(%rbp), $rdi //moves char_to_print[0] 40(%rbp) into %rdi
 	call hex_write_string
 	incq %r14 //increments the loop index by 1
