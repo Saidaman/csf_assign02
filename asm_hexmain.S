@@ -39,6 +39,8 @@ main:
 
 	subq $80, %rsp //stack alignment
 
+	movq, $0, 28(%rbp) //set bytes_read to 0
+
 
 .LmainWhileLoop:
 	movq $0, %r12 //intialize loop counter for .LprintColumnTwo
