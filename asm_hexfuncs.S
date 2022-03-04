@@ -89,7 +89,7 @@ hex_format_offset:
 	movq %r9, %rcx
 	shrq %cl, %r10
 	//shrq %r9, %r10
-	andq $15, (%r10) //dereference change
+	andq $15, %r10 
 	movq $hexArray, %r11
 	movb (%r11, %r10, 1), %cl
 	movb %cl, (%r8)
