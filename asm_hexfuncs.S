@@ -18,22 +18,39 @@
 
 	.globl hex_read
 hex_read:
-	subq $48, %rsp //stack alignment
+	subq $8, %rsp //stack alignment
+	pushq %r12 //loop counter
+	pushq %r13 //to store the address of %rdi
+	pushq %r14 //how many are read in successfully
 
-	movq %rdi, %rsi //second argument of syscall
-	movl $0, %edi //first argument of syscall
-	movl $16, %edx //third argument of syscall
-	
-	movl $0, %eax //telling syscall we want to read
+	movq %rdi, %r13 //store the address of data_buf into %r13
+	movq $0, %r12 //initalize loop counter
+	movq $0, %r14 //initialize numReadSuccessfully
 
-	syscall //reading
+.LcheckRead:
+	cmpq $16, %r12
+	jnb .LdoneWithRead
 
-    addl %eax, %esi // move pointer bytes_read spaces forward
-	addl $0, %esi //store null character
-	subl %eax, %esi //move pointer bytes_read spaces backward
-	addq $48, %rsp //stack alignment
-	movl %r10d, %eax //ensuring bytes_read is the value being returned
-    ret
+	movq $0, %rdi //move 0 into first arg for read to signal standard input
+	leaq (%r13, %r12, 1), %rsi //store data_buf + idx into second arg for read
+	movq $1, %rdx //moves 1 into third arg signalling to read only 1 hex_format_byte_as_hex
+	call read
+
+	cmpq $1, %rax //need to compare 1 with the return value of read, 1 signals that a byte was successfully read in
+	jne .LdoneWithRead //done with input reading
+
+	incq %r12 //increment loop counter
+	incq %r14 //increment numReadSuccessfully
+	jmp .LcheckRead //for another iteration
+
+.LdoneWithRead:
+	movq %r14, %rax //move numReadSuccessfully into return register %rax
+	//need to pop in reverse order
+	popq %r14
+	popq %r13
+	popq %r12
+	addq $8, %rsp //stack alignment
+	ret
 
 	.globl hex_write_string
 hex_write_string:
