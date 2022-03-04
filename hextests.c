@@ -73,6 +73,24 @@ void testFormatOffset(TestObjs *objs) {
   hex_format_offset(256, buf);
   ASSERT(0 == strcmp(buf, "00000100"));
 
+  hex_format_offset(4096, buf);
+  ASSERT(0 == strcmp(buf, "00001000"));
+
+  hex_format_offset(12312, buf);
+  ASSERT(0 == strcmp(buf, "00003018"));
+
+  hex_format_offset(65536, buf);
+  ASSERT(0 == strcmp(buf, "00010000"));
+
+  hex_format_offset(87981, buf);
+  ASSERT(0 == strcmp(buf, "000157ad"));
+
+  hex_format_offset(1048576, buf);
+  ASSERT(0 == strcmp(buf, "00100000"));
+
+  hex_format_offset(748211, buf);
+  ASSERT(0 == strcmp(buf, "000b6ab3"));
+
   hex_format_offset(324235, buf);
   ASSERT(0 == strcmp(buf, "0004f28b"));
 
@@ -81,7 +99,6 @@ void testFormatOffset(TestObjs *objs) {
 
   hex_format_offset(4294967295, buf);
   ASSERT(0 == strcmp(buf, "ffffffff"));
-
 
 }
 
