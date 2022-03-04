@@ -89,7 +89,7 @@ string_length:
 	movq %r9, %rax //move the string length to the return register
 	addq $8, %rsp //stack alignment
 	ret
-///////////////////////////////////////////////////////////////////////////////////////
+
 	.globl hex_format_offset
 hex_format_offset:
 	pushq %rbx //serves as the index for looping (i)
@@ -97,39 +97,43 @@ hex_format_offset:
 	movq %rdi, %rdx //copying offset value
 	movq %rdx, %r9 //moving offset value
 	movq %rsi, %r10 //copying sbuf[]
-	movq $3, %rbx //i=3 for looping
+	movq $3, %rbx //i=3 for looping (3 because hex_format_byte_as_hex does 2 bits at a time)
 	movq $0, %r8 //second looping index
 	movq $24, %rbp //shifting amount
 	cmp $0, %rbx //loop condition checking (if i >= 0)
 	jl .LfinishedOffset 
 
 .LoffsetLoop:
-	movq %r9, %rdx
-	cmp $24, %rbp
-	je .LtwentyFour
-	cmp $16, %rbp
-	je .LsixTeen
+	movq %r9, %rdx //moving offset value that hasn't been shifted
+	//shifting based on shifting amount
 	cmp $8, %rbp
 	je .Leight
+	cmp $16, %rbp
+	je .Lsixteen
+	cmp $24, %rbp
+	je .LtwentyFour
 
-	jmp .LandOperator 
+	jmp .LandOperator //when no shifting
 
-.LtwentyFour:
-	shrq $24, %rdx 
-	jmp .LandOperator
-.LsixTeen:
-	shrq $16, %rdx
-	jmp .LandOperator
+//Branches for shifting right 8, 16, 24
 .Leight:
 	shrq $8, %rdx 
 	jmp .LandOperator
+.Lsixteen:
+	shrq $16, %rdx
+	jmp .LandOperator
+.LtwentyFour:
+	shrq $24, %rdx 
+	jmp .LandOperator
 
+//using & operator 
 .LandOperator:
-	movq %rdx, %rcx 
-	andq $0xFF, %rcx 
-	movq %rcx, %rdi 
-	leaq (%r10, %r8, 2), %rsi 
+	movq %rdx, %rcx //copying to preserve leftmost bits
+	andq $0xFF, %rcx //& with FF to isolate the 8 bits
+	movq %rcx, %rdi //storing the 8 bits into first argument register for hex_format_byte_as_hex
+	leaq (%r10, %r8, 2), %rsi //pointing to address of sbuf where we input the byte as hex
 
+	//allocating space for use of more registers
 	push %rdx
 	push %r10
 	push %rcx
@@ -137,28 +141,27 @@ hex_format_offset:
 
 	call hex_format_byte_as_hex
 
+	//reverse order popping
 	pop %r8
 	pop %rcx
 	pop %r10
 	pop %rdx
 
-	subq $1, %rbx 
-	addq $1, %r8 
-
-	subq $8, %rbp
-
-	cmp $0, %rbx 
+	subq $1, %rbx //decrement loop count
+	addq $1, %r8 //increment index
+	subq $8, %rbp //shift amount decreasing by 8 bits for next loop iteration
+	cmp $0, %rbx //loop condition checking (if i >= 0)
 	jl .LfinishedOffset 
 
 	jmp .LoffsetLoop
 
 .LfinishedOffset:
-	addq $1, %r8 //incrementing index
+	addq $1, %r8 //incrementing index to get the place after 8
 	movb $0, (%r10, %r8, 2) //null terminator
 	popq %rbp //for initial %rbp value
 	popq %rbx //for initial %rbx value
 	ret
-///////////////////////////////////////////////////////////////////////////////////////
+
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
