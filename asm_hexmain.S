@@ -9,130 +9,153 @@
 
 	.section .rodata
 
-	sColonSpace: .string ": "
+	sColon: .string ":"
 	sSpace: .string " "
 	sNewLine: .string "\n"
 	sNullTerminator: .string "\0"
 	sThreeSpace: .string "   "
+
+	.section .bss
+
+	input_buf: .space 16
+	offset: .space 9
+	hex_digits: .space 2
+	chars_to_print: .space 2
 
 	.section .text
 
 	.globl main
 main:
 
-	pushq %rbp
-	pushq %r12 //used as loop variable for .LprintColumnTwo
-	pushq %r13 //used as loop variable for .LpadWithSpaces
-	pushq %r14 //used as loop variable for .LprintColumnThree
+	subq $8, %rsp //stack alignment
 
-	movq %rsp, %rbp // 0(%rbp) = char input_buf[16]
-					//16(%rbp) = char address[9]
-					//25(%rbp) = char hex_digits[3]
-					//28(%rbp) = unsigned bytes_read
-					//32(%rbp) = unsigned need_exit
-					//36(%rbp) = unsigned chars_read
-					//40(%rbp) = char char_to_print[2]
+	pushq %rbx //a loop counter for writing bytes
+	pushq %rbp //loop variable
+	pushq %r12
+	pushq %r13
+	pushq %r14 
+	pushq %r15 
 
-	movq 42(%rsp), %r12 //am I doing this right?
-	movq 46(%rsp), %r13 
-	movq 50(%rsp), %r14
-
-	subq $80, %rsp //stack alignment
-
-	movq $0, 28(%rbp) //set bytes_read to 0
-
-
+	movq $0, %r12 //this will store the address of different arrays throughout
+	movq $0, %r13 //need_exit, will be changed to 1 if its the last iteration of while loop
+	movq $0, %r14 //chars_read value
+	movq $0, %r15 //offset value
+	
 .LmainWhileLoop:
-	movq $0, %r12 //intialize loop counter for .LprintColumnTwo
-	movq $16, %r13 //initialize loop counter for .LpadWithSpaces
-	movq $0, %r14 //initialize loop counter for .LprintColumnThree
+	cmpq $0, %r13
+	je .LreturnMain //if need_exit != 0, then we need to exit main
 
-	movq %rbp, %rdi //moves input_buf into first argument for input into hex_read
-	call hex_read 
-	movq %rax, 36(%rbp) //moves the output of hex_read into %rbp + 36 (chars_read)
+	movq $input_buf, $rdi //moves the input_buf into the first arg %rdi
+	movq %rdi, %r12 //this will save the address of input_buf
+	call hex_read
 
-	cmpq $0, 36(%rbp) //compare chars_read 36(%rbp) to 0 (whether input was read in)
-	je .LreturnMain // return 0 from main and end program	
+	movq %rax, %r14 //store the return value of hex_read into chars_read
+	cmpq $0, %rax //need to see if the return value (chars_read) = 0
+	je .LreturnMain //need to exit main if so
 
-// fall through
-	movq 28(%rbp), %rdi //move bytes_read into the first argument register %rdi (for hex_format_offset)
-	movq 16(%rbp), %rsi //move address into the second argument register %rsi
+	cmpq $16, %r14 //checks to see if we read in the full 16 bytes
+	jnb .LContinueWithoutFlaggingEnd
+//fall through
+	addq $1, %r13 //this signals for this iteration to be the last (need_exit = 1)
+
+.LContinueWithoutFlaggingEnd:
+	movq %r15, %rdi //move offset value into first arg
+	movq %offset, %rsi //stores the offset string into the second arg
+	movq %rsi, %r12 //this will save the address of offset
 	call hex_format_offset
 
-	movq 16(%rbp), %rdi //move address into the first argument register %rdi (for hex_write_string)
+	movq %r12, %rdi //store the offset string into the first arg
 	call hex_write_string
 
-	movq $sColonSpace, %rdi //move ": " into the first argument register %rdi (for hex_write_string)
+	addq $16, %r15 //***this increments offset value by 16 for next iteration
+
+	movq $sColon, %rdi //move ":" into first arg
 	call hex_write_string
 
-.LprintColumnTwo:
-	movq (%rbp, %r12), %rdi
-	//movq %r12(%rbp), %rdi //move the char at position %rbp + %r12(loop index) into %rdi
-	leaq 25(%rbp), %rsi //move hex_digits 25(%rbp) into %rsi
+	movq $0, %rbx //this will be the loop counter for the following loop
+
+//this will print as bytes all the bytes read in during this iteration
+.LprintBytes:
+	cmpq %r14 , %rbx //this will compare the bytes printed to chars_read
+	jnb .LdonePrintingBytes
+
+	movq $sSpace, %rdi //moves " " to first arg
+	call hex_write_string
+
+	movq $input_buf, %rdi //moves input_buf into the first arg
+	movzbq (%rdi, %rbx, 1), %rdi //this will index into the "ith" position of input_buf
+	movq $hex_digits, %rsi //moves hex_digits into the second arg
 	call hex_format_byte_as_hex
-	movq 25(%rbp), %rdi //move hex_digits 25(%rbp) into %rdi
-	call hex_write_string
-	movq $sSpace, %rdi //move " " into %rdi
-	call hex_write_string
-	
-	incq %r12 //increment the loop index by 1
-	cmpq 36(%rbp), %r12 //this compares loop variable %r12 and chars_read 36(%rbp)
-	jl .LprintColumnTwo //if current index < chars_read, then another iteration is done
 
-// fall through
-	cmpq $16, 36(%rbp) //checks to see if the chars read is less than 16
-	subq 36(%rbp), %r13 //subtract chars_read from %r13 (initialized to 16)
-	jl .LpadWithSpaces
+	movq $hex_digits, %rdi //move changed hex_digits into the first arg
+	call hex_write_string
 
-// fall through
-.LprintSpace:
+	incq %rbx //increment loop variable by one
+	jmp .LprintBytes
+
+.LdoneWritingBytes:
+	movq $0, %rbx //%rbx will now be the loop counter for padding
+	movq $16, %rbp //initialize padding count to 16
+	subq %r14, %rbp //stores how many much padding will be needed
+
+.LprintPadding:
+	cmpq %rbp, %rbx //this will compare the ammount padded to the ammount needing padding
+	jnb .LdonePadding
+
+	//print " " three times
+	movq $sSpace, %rdi //move " " into first arg
+	call hex_write_string
+	movq $sSpace, %rdi
+	call hex_write_string
 	movq $sSpace, %rdi
 	call hex_write_string
 
-//fall through
-.LprintColumnThree:
-	movq (%rbp, %r14), %rdi
-	//movq %r14(%rbp), %rdi //moves the input_buf[i] into %rdi
+	incq %rbx //increment loop counter by 1
+	jmp .LprintPadding
+
+.LdonePadding:
+	//print " " two times
+	movq $sSpace, %rdi //move " " into first arg
+	call hex_write_string
+	movq $sSpace, %rdi
+	call hex_write_string
+
+	movq $0, %rbx //%rbx will be the loop counter for string representation printing loop
+
+.LprintStringRep:
+	cmpq %r14, %rbx
+	jnb .LdoneStringRep
+
+	movq $input_buf, %rdi //move input_buf into first arg
+	movzbq (%rbx, %rdi), %rdi //this will index into the "ith" position of input_buf
 	call hex_to_printable
-	movq %rax, 40(%rbp) //moves return value into char_to_print[0] 40(%rbp)
-	movq $sNullTerminator, 41(%rbp) //moves null terminator into char_to_print[1] 41(%rbp)
-	movq 40(%rbp), %rdi //moves char_to_print 40(%rbp) into %rdi
-	call hex_write_string
-	incq %r14 //increments the loop index by 1
-	cmpq 36(%rbp), %r14 // compare the loop index to chars_read	36(%rbp)
-	jl .LprintColumnThree //only iterate through loop again if index < chars_read
 
-// fall through
-	movq $sNewLine, %rdi
+	movq $char_to_print, %rdi //move char_to_print to first arg
+	movb %al, (%rdi) //move return 8-bit value into char_to_print[0], as input into first arg
+	movb $0, 1(%rdi) //move null terminator into char_to_print[0], as input into first arg
 	call hex_write_string
 
-	cmpq $1, 32(%rbp) //compare exit to see if it's value is 1
-	je .LreturnMain //return from main if need_exit = 1
+	incq %rbx //increment loop counter by one
+	jmp .LprintStringRep
 
-	addq $16, 28(%rbp) //add 16 to bytes_read 32(%rbp)
-	jmp .LmainWhileLoop
-
-//**End of big while loop
-
-.LpadWithSpaces:
-	movq $1, 32(%rbp) //move 1 into need_exit (signals exit from main)
-	cmpq $0, %r13 // compare 0 with the loop index
-	jle .LprintSpace // exit loop if loop index is <= 0
-	//fall through
-	movq $sThreeSpace, %rdi //move "   " into %rdi
+.LdoneStringRep:
+	movq $sNewLine, %rdi //move "\n" into the first arg
 	call hex_write_string
-	decq %r13 //decrement the loop index by 1
-	jmp .LpadWithSpaces //go for another iteration of the loop
+
+	jmp .LmainWhileLoop	//another iteration of while loop
 
 .LreturnMain:
-	//pop the registers in the reverse order we pushed
+
+	//need to pop in the reverse order they are pushed initially
+	popq %r15
 	popq %r14
 	popq %r13
 	popq %r12
 	popq %rbp
+	popq %rbx
 
-	addq $80, %rsp //stack alignment
-	movq $0, %rax //main function should return 0 from main
+	addq $8, %rsp //stack alignment
+	movq $0, %rax //sets return value of main as 0
 	ret
 
 /* vim:ft=gas:
