@@ -54,49 +54,45 @@ hex_read:
 
 	.globl hex_write_string
 hex_write_string:
-	pushq %rdi
+	
+	pushq %rbx
+	movq %rdi, %rbx //to preserve the string in %rdi
+	call string_length
 
-	//subq $8, %rsp //stack alignment
-	//movl $1, %edi //first argument of write function
-	movq %rdi, %rsi //second argument of write function
-	call strLen //third argument of syscall (stored in %eax)
-	movq (%rsp), %rdi
-	movl %eax, %edx //moving result from line above into third argument register
-	movq %rsi, %rdi	
-	movl $1, %edi
-	movl $1, %eax //telling syscall we want to write
-	syscall //writing
-	cmpl $0, %eax
+	cmpq $16, %rax //compare 16 to the return value of string_length
+	jnbe .LsetMaxLength
+	jmp .Lcontinue
 
-.LdoneWriting:	
-	popq %rdi
-	//addq $8, %rsp //stack alignment
-    ret
+.LsetMaxLength:
+	movq $16, %rax //move 16(max length) into the return register
 
-/*
- * Determine the length of specified character string.
- *
- * Parameters:
- *   s - pointer to a NUL-terminated character string
- *
- * Returns:
- *    number of characters in the string
- */
-	.globl strLen
-strLen:
-	subq $8, %rsp                 /* adjust stack pointer */
-	movq $0, %r10                 /* initial count is 0 */
+.Lcontinue:
+	//need to use write here
+	movq $1, %rdi //move 1 into first arg, signalling standard output
+	movq %rbx, %rsi //move the string into the second arg
+	movq %rax, %rdx //move the length of the string into third arg
+	call write
 
-.LstrLenLoop:
-	cmpq $0, (%rdi)               /* found NUL terminator? */
-	jz .LstrLenDone               /* if so, done */
-	inc %r10                      /* increment count */
-	inc %rdi                      /* advance to next character */
-	jmp .LstrLenLoop              /* continue loop */
+	popq %rbx //need to align
+	ret
 
-.LstrLenDone:
-	movq %r10, %rax               /* return count */
-	addq $8, %rsp                 /* restore stack pointer */
+//helper for hex_write_string
+	.globl string_length
+string_length:
+	subq $8, %rsp //stack alignment
+	movq $0, %r9 //this will be the length of the string (to return)
+
+.LtraverseString:
+	cmpb $0, (%rdi) //checking for the null terminator
+	je .LdoneCheck
+
+	incq %r9 //increment the string length counter
+	addq $1, %rdi //move 1 index through the string for next loop iteration
+	jmp .LtraverseString
+
+.LdoneCheck:
+	movq %r9, %rax //move the string length to the return register
+	addq $8, %rsp //stack alignment
 	ret
 
 	.globl hex_format_offset //need to annotate this function with comments
