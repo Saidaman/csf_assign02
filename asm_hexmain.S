@@ -42,7 +42,7 @@ main:
 	movq $0, %r15 //offset value
 	
 .LmainWhileLoop:
-	cmpq $0, %r13
+	cmpq $1, %r13
 	je .LreturnMain //if need_exit != 0, then we need to exit main
 
 	movq $input_buf, %rdi //moves the input_buf into the first arg %rdi
