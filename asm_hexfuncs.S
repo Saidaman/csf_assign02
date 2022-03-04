@@ -41,7 +41,8 @@ hex_write_string:
 	//movl $1, %edi //first argument of write function
 	movq %rdi, %rsi //second argument of write function
 	call strLen //third argument of syscall (stored in %eax)
-	movl %eax, %edx //moving result from line above into third argument register	
+	movl %eax, %edx //moving result from line above into third argument register
+	movq %rsi, %rdi	
 	movl $1, %edi
 	movl $1, %eax //telling syscall we want to write
 	syscall //writing
@@ -100,7 +101,7 @@ hex_format_offset:
 	movq $0, %r9
 	addq $8, %rsp //stack alignment	
     ret
-	
+
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
