@@ -88,7 +88,6 @@ hex_format_offset:
 	movq %rdi, %r10
 	movq %r9, %rcx
 	shrq %cl, %r10
-	//shrq %r9, %r10
 	andq $15, %r10 
 	movq $hexArray, %r11
 	movb (%r11, %r10, 1), %cl
@@ -101,7 +100,7 @@ hex_format_offset:
 	movq $0, %r9
 	addq $8, %rsp //stack alignment	
     ret
-
+/*
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
@@ -145,6 +144,65 @@ hex_format_byte_as_hex:
 
     addq $8, %rsp //stack alignment
 	ret
+*/
+
+
+.global hex_format_byte_as_hex
+hex_format_byte_as_hex:
+	
+	subq $8, %rsp /* adjust stack pointer */
+	
+	movq %rdi, %rdx /* copying rdi to rdx */
+	
+	// first = byteval >> 4; // getting the first four bits
+	shrq $4, %rdi /* right shift the first argument by 4 to get first 4 bits */
+	
+	// second = byteval & 1111; // getting the last four bits
+	andq $0xf, %rdx /* logical and on 1111 == 0xf and what is in %rdx to get last 4 bits */
+	
+	// at this point
+	// rdi has first
+	// rdx has second
+
+	//
+
+	// condition check
+	cmp $9, %rdi /* check if the first char is less than 9 (0-9) */
+	ja .LifPartFirst
+
+	// else-part
+	addq $48, %rdi /* Character arithmetic, shift to '0' to '9' range */
+	jmp .LdoneFirst
+
+.LifPartFirst:
+	addq $96, %rdi /* Character arithmetic to get to a-f */
+	subq $9, %rdi /* Subtract 9 to offset the a-f */
+
+.LdoneFirst:
+	// condition check
+	cmp $9, %rdx /* check if the first char is less than 9 (0-9) */
+	ja .LifPartSecond
+
+	// else-part
+	addq $48, %rdx /* Character arithmetic, shift to '0' to '9' range */
+	jmp .LdoneSecond
+
+.LifPartSecond:
+	addq $96, %rdx /* Character arithmetic to get to a-f */
+	subq $9, %rdx /* Subtract 9 to offset the a-f */
+
+.LdoneSecond:
+	// meaning?
+	// rdi + (r10) * 4
+	// where r10 is 0 or 1
+	movq %rdi, (%rsi) // sbuf[0] = first
+	movq %rdx, 1(%rsi)// sbuf[1] = second
+	movq $0, 2(%rsi)  // sbuf[2] = '\0'
+
+	addq $8, %rsp /* adjust stack pointer */
+	ret
+
+
 
 	.globl hex_to_printable
 hex_to_printable:
