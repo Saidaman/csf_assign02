@@ -45,7 +45,7 @@ main:
 	cmpq $0, %r13
 	je .LreturnMain //if need_exit != 0, then we need to exit main
 
-	movq $input_buf, $rdi //moves the input_buf into the first arg %rdi
+	movq $input_buf, %rdi //moves the input_buf into the first arg %rdi
 	movq %rdi, %r12 //this will save the address of input_buf
 	call hex_read
 
@@ -60,7 +60,7 @@ main:
 
 .LContinueWithoutFlaggingEnd:
 	movq %r15, %rdi //move offset value into first arg
-	movq %offset, %rsi //stores the offset string into the second arg
+	movq $offset, %rsi //stores the offset string into the second arg
 	movq %rsi, %r12 //this will save the address of offset
 	call hex_format_offset
 
@@ -93,7 +93,7 @@ main:
 	incq %rbx //increment loop variable by one
 	jmp .LprintBytes
 
-.LdoneWritingBytes:
+.LdonePrintingBytes:
 	movq $0, %rbx //%rbx will now be the loop counter for padding
 	movq $16, %rbp //initialize padding count to 16
 	subq %r14, %rbp //stores how many much padding will be needed
@@ -130,7 +130,7 @@ main:
 	movzbq (%rbx, %rdi), %rdi //this will index into the "ith" position of input_buf
 	call hex_to_printable
 
-	movq $char_to_print, %rdi //move char_to_print to first arg
+	movq $chars_to_print, %rdi //move char_to_print to first arg
 	movb %al, (%rdi) //move return 8-bit value into char_to_print[0], as input into first arg
 	movb $0, 1(%rdi) //move null terminator into char_to_print[0], as input into first arg
 	call hex_write_string
