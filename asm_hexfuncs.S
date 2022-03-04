@@ -104,9 +104,8 @@ hex_format_offset:
 	cmpq $0, %r9
 	jl .LdoneOffset
 	movq %rdi, %r10
-	movq %r9, %rcx
-	shrq %cl, %r10
-	andq $15, %r10 
+	shrq %r9, %r10
+	andq $15, %r10
 	movq $hexArray, %r11
 	movb (%r11, %r10, 1), %cl
 	movb %cl, (%r8)
@@ -115,7 +114,7 @@ hex_format_offset:
 	jmp .LoffsetLoop
 
 .LdoneOffset:
-	movq $0, %r9
+	movb $0, (%r9)
 	addq $8, %rsp //stack alignment	
     ret
 
@@ -123,7 +122,7 @@ hex_format_offset:
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
 
-	movb $0, 2(%rsi) //storing null character in last position of input array
+	movq $0, 2(%rsi) //storing null character in last position of input array
 
 	movq %rdi, %rax //copying input char value
 	
