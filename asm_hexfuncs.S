@@ -110,7 +110,7 @@ hex_format_offset:
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
 
-	movq $0, 2(%rsi) //storing null character in last position of input array
+	movb $0, 2(%rsi) //storing null character in last position of input array
 
 	movq %rdi, %rax //copying input char value
 	
