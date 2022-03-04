@@ -9,7 +9,7 @@
 
 	.section .rodata
 
-	sColonSpace: .string ": 0"
+	sColonSpace: .string ": "
 	sSpace: .string " "
 	sNewLine: .string "\n"
 	sNullTerminator: .string "\0"
