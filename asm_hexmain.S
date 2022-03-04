@@ -39,7 +39,7 @@ main:
 
 	subq $80, %rsp //stack alignment
 
-	movq $0, 28(%rbp) //set bytes_read to 0
+	movq $10, 28(%rbp) //set bytes_read to 0
 
 
 .LmainWhileLoop:
