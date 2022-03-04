@@ -44,8 +44,7 @@ void hex_format_offset(unsigned offset, char sbuf[]) {
   char *val = sbuf;
   for (int i = 28; i >= 0; i -= 4) { //need groups of 4 bits, hence decrease by 4 at a time
     int idx = (offset >> i) & 15; //& operator to isolate the values of the 4 bits
-    *val = hexVals[idx]; //pointer arithmetic
-    *val++;
+    *val++ = hexVals[idx]; //pointer arithmetic
   }
   *val = '\0';
 }
