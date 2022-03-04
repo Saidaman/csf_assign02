@@ -9,12 +9,7 @@
 
 	.section .rodata
 
-	hexArray: .string "0123456789abcdef"
-
 	.section .text
-
-	/* TODO: add functions here */
-
 
 	.globl hex_read
 hex_read:
@@ -94,27 +89,27 @@ string_length:
 	movq %r9, %rax //move the string length to the return register
 	addq $8, %rsp //stack alignment
 	ret
-
-	.globl hex_format_offset //need to annotate this function with comments
+///////////////////////////////////////////////////////////////////////////////////////
+	.globl hex_format_offset
 hex_format_offset:
-	pushq %r12 
-	pushq %r13
-	movq %rdi, %rdx 
-	movq %rdx, %r9 
-	movq %rsi, %r10
-	movq $3, %r12 
-	movq $0, %r8 
-	movq $24, %r13
-	cmp $0, %r12
-	jl .LdoneOffset 
+	pushq %rbx //serves as the index for looping (i)
+	pushq %rbp //indicates shifting portion
+	movq %rdi, %rdx //copying offset value
+	movq %rdx, %r9 //moving offset value
+	movq %rsi, %r10 //copying sbuf[]
+	movq $3, %rbx //i=3 for looping
+	movq $0, %r8 //second looping index
+	movq $24, %rbp //shifting amount
+	cmp $0, %rbx //loop condition checking (if i >= 0)
+	jl .LfinishedOffset 
 
-	.Lloop:
+.LoffsetLoop:
 	movq %r9, %rdx
-	cmp $24, %r13 
+	cmp $24, %rbp
 	je .LtwentyFour
-	cmp $16, %r13
+	cmp $16, %rbp
 	je .LsixTeen
-	cmp $8, %r13 
+	cmp $8, %rbp
 	je .Leight
 
 	jmp .LandOperator 
@@ -147,26 +142,23 @@ hex_format_offset:
 	pop %r10
 	pop %rdx
 
-	subq $1, %r12 
+	subq $1, %rbx 
 	addq $1, %r8 
 
-	subq $8, %r13
+	subq $8, %rbp
 
-	cmp $0, %r12 
-	jl .LdoneOffset 
+	cmp $0, %rbx 
+	jl .LfinishedOffset 
 
-	jmp .Lloop
+	jmp .LoffsetLoop
 
-.LdoneOffset:
-	addq $1, %r8 /* advance the index by one more, at index 8 */
-	movb $0, (%r10, %r8, 2) /* adding null terminator at end of 8 char sbuf */
-	
-	popq %r13 /* restoring original value of %r13 */
-	popq %r12 /* restoring original value of %r12 */
-
+.LfinishedOffset:
+	addq $1, %r8 //incrementing index
+	movb $0, (%r10, %r8, 2) //null terminator
+	popq %rbp //for initial %rbp value
+	popq %rbx //for initial %rbx value
 	ret
-	
-
+///////////////////////////////////////////////////////////////////////////////////////
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
 	subq $8, %rsp //stack alignment
