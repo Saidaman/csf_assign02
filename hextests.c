@@ -55,6 +55,9 @@ int main(int argc, char **argv) {
 void testFormatOffset(TestObjs *objs) {
   (void) objs; // suppress warning about unused parameter
   char buf[16];
+  hex_format_offset(0, buf);
+  ASSERT(0 == strcmp(buf, "00000000"));
+
   hex_format_offset(1L, buf);
   ASSERT(0 == strcmp(buf, "00000001"));
 
@@ -66,6 +69,20 @@ void testFormatOffset(TestObjs *objs) {
 
   hex_format_offset(10, buf);
   ASSERT(0 == strcmp(buf, "0000000a"));
+
+  hex_format_offset(256, buf);
+  ASSERT(0 == strcmp(buf, "00000100"));
+
+  hex_format_offset(324235, buf);
+  ASSERT(0 == strcmp(buf, "0004f28b"));
+
+  hex_format_offset(91347024, buf);
+  ASSERT(0 == strcmp(buf, "0571d850"));
+
+  hex_format_offset(4294967295, buf);
+  ASSERT(0 == strcmp(buf, "ffffffff"));
+
+
 }
 
 void testFormatByteAsHex(TestObjs *objs) {

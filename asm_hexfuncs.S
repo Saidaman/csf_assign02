@@ -97,27 +97,75 @@ string_length:
 
 	.globl hex_format_offset //need to annotate this function with comments
 hex_format_offset:
-	subq $8, %rsp //stack alignment
-	movq %rsi, %r8
-	movq $28, %r9
-.LoffsetLoop:
-	cmpq $0, %r9
-	jl .LdoneOffset
-	movq %rdi, %r10
-	movq %r9, %rcx
-	shrq %cl, %r10
-	andq $15, %r10
-	movq $hexArray, %r11
-	movb (%r11, %r10, 1), %cl
-	movb %cl, (%r8)
-	incq %r8
-	subq $4, %r9
-	jmp .LoffsetLoop
+	pushq %r12 
+	pushq %r13
+	movq %rdi, %rdx 
+	movq %rdx, %r9 
+	movq %rsi, %r10
+	movq $3, %r12 
+	movq $0, %r8 
+	movq $24, %r13
+	cmp $0, %r12
+	jl .LdoneOffset 
+
+	.Lloop:
+	movq %r9, %rdx
+	cmp $24, %r13 
+	je .LtwentyFour
+	cmp $16, %r13
+	je .LsixTeen
+	cmp $8, %r13 
+	je .Leight
+
+	jmp .LandOperator 
+
+.LtwentyFour:
+	shrq $24, %rdx 
+	jmp .LandOperator
+.LsixTeen:
+	shrq $16, %rdx
+	jmp .LandOperator
+.Leight:
+	shrq $8, %rdx 
+	jmp .LandOperator
+
+.LandOperator:
+	movq %rdx, %rcx 
+	andq $0xFF, %rcx 
+	movq %rcx, %rdi 
+	leaq (%r10, %r8, 2), %rsi 
+
+	push %rdx
+	push %r10
+	push %rcx
+	push %r8
+
+	call hex_format_byte_as_hex
+
+	pop %r8
+	pop %rcx
+	pop %r10
+	pop %rdx
+
+	subq $1, %r12 
+	addq $1, %r8 
+
+	subq $8, %r13
+
+	cmp $0, %r12 
+	jl .LdoneOffset 
+
+	jmp .Lloop
 
 .LdoneOffset:
-	movb $0, (%r9)
-	addq $8, %rsp //stack alignment	
-    ret
+	addq $1, %r8 /* advance the index by one more, at index 8 */
+	movb $0, (%r10, %r8, 2) /* adding null terminator at end of 8 char sbuf */
+	
+	popq %r13 /* restoring original value of %r13 */
+	popq %r12 /* restoring original value of %r12 */
+
+	ret
+	
 
 	.globl hex_format_byte_as_hex
 hex_format_byte_as_hex:
