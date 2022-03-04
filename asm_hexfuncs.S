@@ -66,7 +66,7 @@ strLen:
 	movq $0, %r10                 /* initial count is 0 */
 
 .LstrLenLoop:
-	cmpq $0, %rdi               /* found NUL terminator? */
+	cmpq $0, (%rdi)               /* found NUL terminator? */
 	jz .LstrLenDone               /* if so, done */
 	inc %r10                      /* increment count */
 	inc %rdi                      /* advance to next character */
